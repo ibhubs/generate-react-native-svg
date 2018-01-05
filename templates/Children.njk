@@ -1,0 +1,11 @@
+{% for child in children %}
+{% if isValidTag(renderTag(child.tag)) %}
+<{{renderTag(child.tag)}}
+{% if child.attr %}
+{{renderProps(child.attr,2) | safe}}
+{% endif %}
+>
+{{renderChildren(child.children) | safe}}
+</{{renderTag(child.tag)}}>
+{% endif %}
+{% endfor %}

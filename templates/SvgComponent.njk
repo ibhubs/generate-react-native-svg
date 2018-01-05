@@ -1,0 +1,18 @@
+/*
+ * @flow
+ */
+
+
+class {{tag}} extends React.Component{
+  render(){
+    return (
+<{{renderTag(tag)}}
+{% if attr %}
+{{renderProps(attr,2) | safe}}
+{% endif %}
+>
+{{renderChildren(children) | safe}}
+</{{renderTag(tag)}}>
+    )
+  }
+}
