@@ -75,7 +75,6 @@ if (commander.input) {
 }
 
 function getJSXTag(tag) {
-  if (commander.debug) console.log(chalk.red(`tag: ${tag}`));
   return upperCamelCase(tag);
 }
 
@@ -145,6 +144,38 @@ function renderChildren(children) {
   });
 }
 
+function getTagsFromSvgChild(tags, child) {
+  if (Array.isArray(tags)) {
+    const validTag = getJSXTag(child.tag);
+    if (isValidTag(validTag)) {
+      return tags.concat(validTag, ...getTags(child.children));
+    }
+  }
+  return [];
+}
+
+function getTags(children) {
+  if (Array.isArray(children)) {
+    return children.reduce(getTagsFromSvgChild, []);
+  }
+  return [];
+}
+
+function getTagsString(children) {
+  if (Array.isArray(children)) {
+    const tagsString = `${[...new Set(getTags(children))].reduce(function(
+      tagString,
+      tag
+    ) {
+      return tagString + ' ' + tag + ',';
+    },
+    '{')}}`;
+    if (commander.debug) console.log('import string ', chalk.green(tagsString));
+    return tagsString;
+  }
+  return '';
+}
+
 function renderSVGComponent() {}
 
 function renderTemplate(svgData) {
@@ -152,7 +183,8 @@ function renderTemplate(svgData) {
     ...svgData,
     renderTag: getJSXTag,
     renderProps,
-    renderChildren
+    renderChildren,
+    getTagsString
   });
   renderedSVG = prettier.format(renderedSVG, { singleQuote: true });
   console.log(chalk.yellow(renderedSVG));
