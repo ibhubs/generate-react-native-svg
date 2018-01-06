@@ -13,6 +13,7 @@ import jsonParser from 'svg-json-parser';
 import fs from 'fs';
 import mkdirp from 'mkdirp';
 import upperCamelCase from 'uppercamelcase';
+import camelcase from 'camelcase';
 import nunjucks from 'nunjucks';
 import prettier from 'prettier';
 
@@ -46,8 +47,10 @@ if (commander.input) {
   if (svgPath.ext === '.svg') {
     outputPath = commander.output;
     const outputParsedPath = path.parse(outputPath || '');
+    let outputFilename = outputParsedPath.name;
     if (!outputPath) {
       outputPath = `${process.cwd()}/${svgPath.name}.js`;
+      outputFilename = svgPath.name;
     } else if (outputParsedPath.ext === '') {
       outputPath = `${outputPath}/${svgPath.name}.js`;
     }
@@ -61,7 +64,7 @@ if (commander.input) {
         `${commander.input}`,
         `${dirname}/temp/svg`
       );
-      renderTemplate(svgData);
+      renderTemplate(svgData, upperCamelCase(outputFilename));
     });
   } else {
     console.error(chalk.red('Enter valid svg'));
@@ -88,7 +91,7 @@ function renderProps(attributes, level) {
   console.log('attributes ', JSON.stringify(attributes), JSON.stringify(keys));
   keys.forEach(function(key) {
     if (key !== 'transform')
-      props += `${key}=\"${processPropValue(attributes[key])}\"\n`;
+      props += `${camelcase(key)}=\"${processPropValue(attributes[key])}\"\n`;
     else {
       let transforms = attributes[key].split(/\)\s/);
       transforms = transforms.reduce(function(result, transform) {
@@ -101,7 +104,7 @@ function renderProps(attributes, level) {
         return result.concat(
           `${transformContents[0]}:\"${transformContents[1]}\",`
         );
-      }, `${key}={{`);
+      }, `${camelcase(key)}={{`);
       console.log(chalk.cyan(JSON.stringify(`${transforms}}`)));
       props += `${transforms}}}\n`;
     }
@@ -178,9 +181,10 @@ function getTagsString(children) {
 
 function renderSVGComponent() {}
 
-function renderTemplate(svgData) {
+function renderTemplate(svgData, filename) {
   let renderedSVG = nunjucks.render('SvgComponent.njk', {
     ...svgData,
+    name: filename,
     renderTag: getJSXTag,
     renderProps,
     renderChildren,

@@ -1,8 +1,7 @@
 {
   "name": "generate-react-native-svg",
   "version": "0.0.1",
-  "description":
-    "Command line utility to generate react-native-svg component from a svg file",
+  "description": "Command line utility to generate react-native-svg component from a svg file",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -17,7 +16,11 @@
     "type": "git",
     "url": "git+https://github.com/ibhubs/generate-react-native-svg.git"
   },
-  "keywords": ["svg", "react-native", "react-native-svg"],
+  "keywords": [
+    "svg",
+    "react-native",
+    "react-native-svg"
+  ],
   "author": "",
   "license": "MIT",
   "bugs": {
@@ -25,6 +28,7 @@
   },
   "homepage": "https://github.com/ibhubs/generate-react-native-svg#readme",
   "dependencies": {
+    "camelcase": "^4.1.0",
     "chalk": "2.3.0",
     "commander": "2.12.2",
     "nunjucks": "3.0.1",
